@@ -3,6 +3,7 @@ Region Finder - Find region location from view and minimap images
 """
 import cv2
 import numpy as np
+import os
 from typing import Tuple, Optional, Dict
 
 
@@ -31,9 +32,13 @@ class RegionFinder:
             Image as numpy array or None if loading fails
         """
         try:
+            if not os.path.exists(image_path):
+                print(f"Error: File not found: {image_path}")
+                return None
+            
             image = cv2.imread(image_path)
             if image is None:
-                print(f"Error: Could not load image from {image_path}")
+                print(f"Error: Could not load image from {image_path}. Check if the file format is supported (jpg, png, etc.)")
                 return None
             return image
         except Exception as e:
@@ -187,11 +192,14 @@ def main():
     Main function demonstrating usage.
     """
     import sys
+    import os
+    
+    script_name = os.path.basename(sys.argv[0])
     
     if len(sys.argv) < 3:
-        print("Usage: python region_finder.py <view_image> <minimap_image> [output_image]")
+        print(f"Usage: python {script_name} <view_image> <minimap_image> [output_image]")
         print("\nExample:")
-        print("  python region_finder.py view.jpg minimap.jpg result.jpg")
+        print(f"  python {script_name} view.jpg minimap.jpg result.jpg")
         sys.exit(1)
     
     view_path = sys.argv[1]
